@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Livro>;
+<div class="row">
+    <div class="col-12 mt-2 mb-3">
+        <h1>Coleção de Livros</h1>
+        <a asp-action="Create" class="btn btn-primary mt-3">Novo Livro</a>
+    </div>
+    @if (TempData["TipoMensagem"] != null)
+    {
+        @if (TempData["TipoMensagem"].ToString() == "Sucesso")
+        {
+            <div class="col-12">
+                <div class="alert alert-success">@TempData["Mensagem"].ToString()</div>
+            </div>
+        }
+    }
+    <div class="col-12">
+        <form method="post">
+            <div class="form-group">
+                <label for="txtTitulo">Título</label>
+                <input type="search" id="txtTitulo" name="Titulo" class="form-control" placeholder="Digite o título" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-12 mt-3">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Titulo)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataPublicacao)</th>
+                    <th class="text-center">Editar</th>
+                    <th class="text-center">Remover</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (Livro livro in Model)
+                    {
+                        <tr>
+                            <td>
+                                @livro.Id
+                            </td>
+                            <td>
+                                @livro.Titulo
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => livro.DataPublicacao)
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@livro.Id" style="color: #ffffff; font-size:16px">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalRemocao" data-code="@livro.Id" style="color: #ffffff; font-size:16px">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal" id="modalRemocao" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <i class="fa fa-4x fa-minus-circle text-danger"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center" style="padding-top: 12px;">
+                    <span class="h4">Tem certeza?</span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <small style="text-align: center">Deseja realmente remover este livro do sistema? </small>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center" style="border-top: 0px;">
+                <form>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-sm btn-danger" asp-action="Delete" id="btnRemover">Remover</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        $('#modalRemocao').on('show.bs.modal', function (e) {
+            let code = $(e.relatedTarget).data('code');
+            let s = document.getElementById('btnRemover').getAttribute('formaction');
+
+            document.getElementById('btnRemover').removeAttribute('formaction');
+            document.getElementById('btnRemover').setAttribute('formaction', s + '/' + code);
+        });
+    }
+</script>
