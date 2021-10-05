@@ -12,12 +12,30 @@
                 <div class="alert alert-success">@TempData["Mensagem"].ToString()</div>
             </div>
         }
+        else @if (TempData["TipoMensagem"].ToString() == "Erro")
+  {
+    <div class="col-12">
+        <div class="alert alert-danger">@TempData["Mensagem"].ToString()</div>
+    </div>
+}
     }
     <div class="col-12">
         <form method="post">
             <div class="form-group">
                 <label for="txtTitulo">Título</label>
                 <input type="search" id="txtTitulo" name="Titulo" class="form-control" placeholder="Digite o título" />
+            </div>
+            <div class="form-group">
+                <label for="txtNomeEditora">Editora</label>
+                <select id="txtNomeEditora" name="EditoraID" class="form-control" asp-items="@ViewBag.Editoras"></select>
+            </div>
+            <div class="form-group">
+                <label for="txtTipoItem">Classificação</label>
+                <select id="txtTipoItem" name="ClassificacaoLivroID" class="form-control" asp-items="@ViewBag.Classificacoes"></select>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" name="AcessoOnline" id="AcessoOnline" value="true" class="form-check-input" />
+                <label class="form-check-label" for="AcessoOnline">Disponibilidade acesso online</label>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Pesquisar</button>
@@ -28,9 +46,12 @@
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.ID)</th>
                     <th>@Html.DisplayNameFor(model => model.Titulo)</th>
                     <th>@Html.DisplayNameFor(model => model.DataPublicacao)</th>
+                    <th>@Html.DisplayNameFor(model => model.Editora)</th>
+                    <th>@Html.DisplayNameFor(model => model.ClassificacaoLivro)</th>
+                    <th>@Html.DisplayNameFor(model => model.AcessoOnline)</th>
                     <th class="text-center">Editar</th>
                     <th class="text-center">Remover</th>
                 </tr>
@@ -42,7 +63,7 @@
                     {
                         <tr>
                             <td>
-                                @livro.Id
+                                @livro.ID
                             </td>
                             <td>
                                 @livro.Titulo
@@ -50,13 +71,25 @@
                             <td>
                                 @Html.DisplayFor(model => livro.DataPublicacao)
                             </td>
+                            <td>@livro.Editora.NomeEditora</td>
+                            <td>@livro.ClassificacaoLivro.Classificacao</td>
+                            <td>
+                                @if (livro.AcessoOnline)
+                                {
+                                    <span>Sim</span>
+                                }
+                                else
+                                {
+                                    <span>Não</span>
+                                }
+                            </td>
                             <td class="text-center">
-                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@livro.Id" style="color: #ffffff; font-size:16px">
+                                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@livro.ID" style="color: #ffffff; font-size:16px">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalRemocao" data-code="@livro.Id" style="color: #ffffff; font-size:16px">
+                                <a class="btn btn-sm btn-danger btnAbrirModalRemocao" data-toggle="modal" data-target="#modalRemocao" data-code="@livro.ID" style="color: #ffffff; font-size:16px">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </td>
@@ -92,14 +125,60 @@
         </div>
     </div>
 </div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     window.onload = function () {
+        var trReference = null;
+
+        $(".btnAbrirModalRemocao").on('click', function () {
+            trReference = $(this).parents(":eq(1)");
+        });
+
         $('#modalRemocao').on('show.bs.modal', function (e) {
             let code = $(e.relatedTarget).data('code');
-            let s = document.getElementById('btnRemover').getAttribute('formaction');
+            let s = document.getElementById('btnRemover').getAttribute('data-id');
 
-            document.getElementById('btnRemover').removeAttribute('formaction');
-            document.getElementById('btnRemover').setAttribute('formaction', s + '/' + code);
+            document.getElementById('btnRemover').removeAttribute('data-id');
+            document.getElementById('btnRemover').setAttribute('data-id', code);
+        });
+
+        $("#btnRemover").on("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const idPost = $(this).attr("data-id");
+            const url = $(this).attr("formaction");
+            const btn = $(this);
+                $.ajax({
+                    type: "DELETE",
+                    url: url +"/"+ idPost,
+              
+                    beforeSend: function () {
+                        btn.html(
+                        "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar"
+                    ).attr("disabled", true);
+                },
+                    success: function (response) {
+                        $("#modalRemocao").modal("hide");
+                        trReference.hide(300);
+                        trReference.remove();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso!',
+                        text: 'Livro salvo com sucesso'
+                    })
+                },
+                    error: function (response) {
+                        $("#modalRemocao").modal("hide");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ops, ocorreu um erro inesperado no cadastro do livro',
+                        text: error.responseText
+                    })
+
+                }
+                }).always(function (response) {
+                    btn.html("Salvar").removeAttr("disabled");
+            });
         });
     }
 </script>

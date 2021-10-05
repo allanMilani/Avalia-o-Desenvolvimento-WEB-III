@@ -14,6 +14,8 @@ namespace Aula_03.Data
 
         }
 
-        public DbSet<Livro> Livros { get; set; }
+        public DbSet<Editora> TBEditora { get; set; }
+        public DbSet<ClassificacaoLivro> TBClassificacaoLivro { get; set; }
+        public DbSet<Livro> TBLivro { get; set; }
     }
 }

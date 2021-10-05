@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
     <header>
@@ -22,8 +23,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="dropdownLivro" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer">Livro</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownLivro">
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Livro" asp-action="Index">Ver Livros</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Livro" asp-action="Create">Novo Livro</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="dropdownEditora" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer">Editora</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownEditora">
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Editora" asp-action="Index">Ver Editora</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Editora" asp-action="Create">Nova Editora</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" id="dropdownClassificacaoLivro" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer">Classificação Livro</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownClassificacaoLivro">
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="ClassificacaoLivro" asp-action="Index">Ver Editora</a>
+                                <a class="dropdown-item text-dark" asp-area="" asp-controller="ClassificacaoLivro" asp-action="Create">Nova Editora</a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -41,7 +60,6 @@
             &copy; 2021 - Aula_03 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

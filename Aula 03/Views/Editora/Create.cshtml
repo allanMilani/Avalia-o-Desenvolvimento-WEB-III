@@ -1,0 +1,28 @@
+﻿@model Aula_03.Models.Editora;
+<form method="post">
+    <div>
+        <div class="form-group">
+            <label asp-for="NomeEditora"></label>
+            <input asp-for="NomeEditora" class="form-control" />
+            <span asp-validation-for="NomeEditora" class="text-danger small"></span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>
+</form>
+@if (ViewBag.TipoMensagem != null)
+{
+    if (ViewBag.TipoMensagem == "Erro")
+    {
+        <div class="alert alert-danger">@ViewBag.Mensagem</div>
+    }
+    else
+    {
+        <div class="alert alert-success">@ViewBag.Mensagem</div>
+    }
+}
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

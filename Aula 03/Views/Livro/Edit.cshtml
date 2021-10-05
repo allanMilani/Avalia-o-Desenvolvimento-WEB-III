@@ -18,7 +18,7 @@
 <div class="row">
     <div class="col-12">
         <form method="post" asp-action="Edit">
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ID" />
             <div>
                 <div class="form-group">
                     <label asp-for="Titulo"></label>
@@ -30,6 +30,29 @@
                     <label asp-for="DataPublicacao"></label>
                     <input asp-for="DataPublicacao" class="form-control" />
                     <span asp-validation-for="DataPublicacao" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="NumeroPagina"></label>
+                    <input asp-for="NumeroPagina" class="form-control" />
+                    <span asp-validation-for="NumeroPagina" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Editora"></label>
+                    <select asp-for="Editora.ID" class="form-control" data-val="true" asp-items="@ViewBag.Editoras"></select>
+                    <span asp-validation-for="Editora.ID" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ClassificacaoLivro"></label>
+                    <select asp-for="ClassificacaoLivro.ID" class="form-control" asp-items="@ViewBag.Classificacoes"></select>
+                    <span asp-validation-for="ClassificacaoLivro.ID" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group form-check">
+                    <input asp-for="AcessoOnline" class="form-check-input" />
+                    <label class="form-check-label" asp-for="AcessoOnline">O livro possui acesso online?</label>
                 </div>
 
                 <div class="form-group">

@@ -1,36 +1,109 @@
 ﻿@model Aula_03.Models.Livro;
-<form method="post">
+<form action="/Livro/Create" method="post" id="frmCadastroLivro">
     <div>
         <div class="form-group">
             <label asp-for="Titulo"></label>
-            <input asp-for="Titulo" class="form-control" />
+            <input asp-for="Titulo" class="form-control" required/>
             <span asp-validation-for="Titulo" class="text-danger small"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="DataPublicacao"></label>
-            <input asp-for="DataPublicacao" class="form-control" />
+            <input asp-for="DataPublicacao" class="form-control" required/>
             <span asp-validation-for="DataPublicacao" class="text-danger small"></span>
         </div>
 
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <label asp-for="NumeroPagina"></label>
+            <input asp-for="NumeroPagina" class="form-control" required/>
+            <span asp-validation-for="NumeroPagina" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Editora"></label>
+            <select asp-for="Editora.ID" class="form-control" data-val="true" asp-items="@ViewBag.Editoras"></select>
+            <span asp-validation-for="Editora.ID" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ClassificacaoLivro"></label>
+            <select asp-for="ClassificacaoLivro.ID" class="form-control" asp-items="@ViewBag.Classificacoes"></select>
+            <span asp-validation-for="ClassificacaoLivro.ID" class="text-danger small"></span>
+        </div>
+
+        <div class="form-group form-check">
+            <input asp-for="AcessoOnline" class="form-check-input" />
+            <label class="form-check-label" asp-for="AcessoOnline">O livro possui acesso online?</label>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" id="btnSalvar" class="btn btn-primary">Salvar</button>
         </div>
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     </div>
 </form>
-@if (ViewBag.TipoMensagem != null)
-{
-    if (ViewBag.TipoMensagem == "Erro")
+@*@if (ViewBag.TipoMensagem != null)
     {
-        <div class="alert alert-danger">@ViewBag.Mensagem</div>
-    }
-    else
-    {
-        <div class="alert alert-success">@ViewBag.Mensagem</div>
-    }
-}
+        if (ViewBag.TipoMensagem == "Erro")
+        {
+            <div class="alert alert-danger">@ViewBag.Mensagem</div>
+        }
+        else
+        {
+            <div class="alert alert-success">@ViewBag.Mensagem</div>
+        }
+    }*@
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    $("#btnSalvar").on("click", function (event) {
+        //console.log(document.getElementById("frmCadastroLivro").checkValidity());
+        if ($("#frmCadastroLivro")[0].checkValidity() == false)
+            return;
+        else {
+            event.preventDefault();
+            event.stopPropagation();
+            const $form = $("#frmCadastroLivro");
+            const dadosForm = new FormData($form[0]);
+            const urlForm = $form.attr("action");
+            const method = $form.attr("method");
+
+            $.ajax({
+                type: method,
+                url: urlForm,
+                data: dadosForm,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $form.find("button").html(
+                        "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>&nbsp;Salvar"
+                    ).attr("disabled", true);
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso!',
+                        text: 'Livro salvo com sucesso'
+                    })
+                },
+                error: function (response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ops, ocorreu um erro inesperado no cadastro do livro',
+                        text: error.responseText
+                    })
+
+                }
+            }).always(function (response) {
+                $form.find("button").html("Salvar").removeAttr("disabled");
+            });
+        }
+    });
+
+</script>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
